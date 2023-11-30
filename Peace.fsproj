@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="Program.fs" />
+        <Content Include="licence.txt" />
+        <Content Include="readme.md" />
+        <Content Include="input\2023\day01\input.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Fmbm.DirPaths" Version="1.0.1" />
+    </ItemGroup>
+
+</Project>
