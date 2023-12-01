@@ -6,11 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Program.fs" />
-        <Compile Include="snip.txt" />
         <Content Include="licence.txt" />
         <Content Include="readme.md" />
         <Content Include="input\2023\day01\input.txt" />
+        <Compile Include="Program.fs" />
     </ItemGroup>
 
     <ItemGroup>
