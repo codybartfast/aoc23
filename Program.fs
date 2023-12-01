@@ -1,11 +1,12 @@
 ﻿open System.IO
 
-open Day01
-let day = "01"
+open Day02
+let day = "02"
 
 let getLines day file =
-    let inputFile file = Path.Combine("../../../input/2023", $"day{day}", $"{file}.txt")
-    File.ReadAllLines(inputFile file) |> List.ofArray
+    Path.Combine("../../../input/2023", $"day{day}", $"{file}.txt")
+    |> File.ReadAllLines
+    |> List.ofArray
 
 [<EntryPoint>]
 let main _ =
