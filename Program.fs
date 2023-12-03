@@ -1,15 +1,30 @@
-﻿open System.IO
+﻿open System
+open System.Diagnostics
+open System.IO
 
-open Day02
-let day = "02"
+open Day03
+let day = "03"
 
 let getLines day file =
     Path.Combine("../../../input/2023", $"day{day}", $"{file}.txt")
     |> File.ReadAllLines
     |> List.ofArray
 
+let inline display partNo (result, (time: TimeSpan)) =
+    let timePart = time.TotalSeconds.ToString("000.000000")
+    printfn $"[{timePart}]  Part {partNo}: {result}"
+
+let time action =
+    let sw = Stopwatch()
+    sw.Start()
+    let rslt = action ()
+    sw.Stop()
+    (rslt, sw.Elapsed)
+
 [<EntryPoint>]
 let main _ =
-    part1 (getLines day)
-    part2 (getLines day)
+    getLines day "input" |> ignore
+    printfn ""
+    (fun () -> part1 (getLines day)) |> time |> (display 1)
+    (fun () -> part2 (getLines day)) |> time |> (display 2)
     0
