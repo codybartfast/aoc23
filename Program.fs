@@ -1,14 +1,10 @@
 ﻿open System
+open System.Collections
 open System.Diagnostics
 open System.IO
 
 open Day03
 let day = "03"
-
-let getLines day file =
-    Path.Combine("../../../input/2023", $"day{day}", $"{file}.txt")
-    |> File.ReadAllLines
-    |> List.ofArray
 
 let inline display partNo (result, (time: TimeSpan)) =
     let timePart = time.TotalSeconds.ToString("000.000000")
@@ -20,6 +16,12 @@ let time action =
     let rslt = action ()
     sw.Stop()
     (rslt, sw.Elapsed)
+
+let getLines day file =
+    Path.Combine("../../../input/2023", $"day{day}", $"{file}.txt")
+    |> File.ReadAllLines
+    |> List.ofArray
+
 
 [<EntryPoint>]
 let main _ =
