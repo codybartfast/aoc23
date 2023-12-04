@@ -36,9 +36,7 @@ let sumCalVals firstReplace lastReplace =
 let part1 getLines =
     getLines "input"
     |> sumCalVals id id
-    |> printfn "Part One: %O"
 
 let part2 getLines =
     getLines "input"
     |> sumCalVals (wordToDigit false) (wordToDigit true)
-    |> printfn "Part Two: %O"
