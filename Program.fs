@@ -22,7 +22,6 @@ let getLines day file =
     |> File.ReadAllLines
     |> List.ofArray
 
-
 [<EntryPoint>]
 let main _ =
     getLines day "input" |> ignore
