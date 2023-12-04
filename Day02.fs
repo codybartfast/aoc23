@@ -42,9 +42,7 @@ let part1 getLines =
     |> List.map parseLine
     |> List.filter (snd >> (possible 12 13 14))
     |> List.sumBy fst
-    |> printfn "Part One: %A"
 
 let part2 getLines =
     getLines "input"
     |> List.sumBy (parseLine >> snd >> power)
-    |> printfn "Part One: %A"
