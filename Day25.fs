@@ -9,8 +9,8 @@ let parseLine (line: string) =
 let part1 (getLines: string -> string list) =
     getLines "test1"
     |> List.map parseLine
-    |> (fun (x) -> String.Join(", ", x))
+    |> fun x -> String.Join(" | ", x)
 
 let part2 (getLines: string -> string list) =
-    getLines "input"
-    |> List.length
+    let lines = getLines "input"
+    $"{lines.Length} lines: {lines}"
