@@ -26,6 +26,13 @@ let getLines day file =
 let main _ =
     getLines day "input" |> ignore
     printfn ""
+
+    if true then
+        printfn $"Warming up ... "
+        (fun () -> part1 (getLines day)) |> time |> ignore
+        (fun () -> part2 (getLines day)) |> time |> ignore
+        printfn ""
+
     (fun () -> part1 (getLines day)) |> time |> (display 1)
     (fun () -> part2 (getLines day)) |> time |> (display 2)
     0
