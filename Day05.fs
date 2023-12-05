@@ -2,20 +2,19 @@ module Day05
 
 open System
 
-let paragraphs =
-    let rec paragraphs part paras = function
-        | [] -> ((part |> List.rev) :: paras) |> List.rev
-        | ("" :: rest) -> paragraphs [] ((part |> List.rev) :: paras) rest
-        | ln :: rest -> paragraphs (ln :: part) paras rest
-    paragraphs  [] []
+let splitOn sep =
+    let rec split part parts = function
+        | [] -> ((part |> List.rev) :: parts) |> List.rev
+        | h :: t when h  = sep -> split [] ((part |> List.rev) :: parts) t
+        | h :: t -> split (h :: part) parts t
+    split [] []
 
-let seedVals (line: string) =
-    line.Split(" ") |> List.ofArray |> List.tail |> List.map uint
-
-let spanFromNumber =
-    seedVals >> List.map (fun a -> (a, a))
-let spanFromRange =
-    seedVals >> List.chunkBySize 2 >> List.map (fun [a; b] -> (a, a + b))
+let seedSpans isRange (line: string) =
+    line.Split(" ")[1..] |> List.ofArray |> List.map uint |>
+        if isRange then
+            List.chunkBySize 2 >> List.map (fun [a; b] -> (a, a + b))
+        else
+            List.map (fun a -> (a, a))
 
 let toMapSpec (line: string) =
     line.Split(" ") |> Array.map uint
@@ -35,17 +34,16 @@ let fillMapSpecs mapSpec =
 let applyMap mapSpec (spnStart, spnEnd) =
     mapSpec
     |> List.skipWhile (fun ((_, srcEnd), _) -> srcEnd < spnStart)
-    |> List.takeWhile (fun ((srcStart, _), _) -> srcStart < spnEnd  )
+    |> List.takeWhile (fun ((srcStart, _), _) -> srcStart < spnEnd)
     |> List.map (fun ((srcStart, srcEnd), dstStart) ->
         let shift = dstStart - srcStart
         (shift + max spnStart srcStart, shift + min spnEnd srcEnd))
 
 let bestLocation isRange lines =
-    let seedParas :: mapParas = lines |> paragraphs
-    let seedSpans =
-        seedParas[0] |> if isRange then spanFromRange else spanFromNumber
+    let seedPart :: mapParts = lines |> splitOn ""
+    let seedSpans = seedPart[0] |> seedSpans isRange
     let mapSpecs =
-        mapParas |> List.map (List.tail >> List.map toMapSpec >> fillMapSpecs)
+        mapParts |> List.map (List.tail >> List.map toMapSpec >> fillMapSpecs)
     (seedSpans, mapSpecs)
         ||> List.fold (fun spans spec -> spans |> List.collect (applyMap spec))
     |> List.sortBy fst |> List.head |> fst
