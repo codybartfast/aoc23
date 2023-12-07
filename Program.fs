@@ -2,8 +2,8 @@
 open System.Diagnostics
 open System.IO
 
-open Day06
-let day = "06"
+open Day07
+let day = "07"
 
 let inline display partNo (result, (time: TimeSpan)) =
     let timePart = time.TotalSeconds.ToString("000.000000")
@@ -23,15 +23,14 @@ let getLines day file =
 
 [<EntryPoint>]
 let main _ =
-    getLines day "input" |> ignore
-    printfn ""
 
     if true then
+        printfn ""
         printfn $"Warming up ... "
         (fun () -> part1 (getLines day)) |> time |> ignore
         (fun () -> part2 (getLines day)) |> time |> ignore
-        printfn ""
 
+    printfn ""
     (fun () -> part1 (getLines day)) |> time |> (display 1)
     (fun () -> part2 (getLines day)) |> time |> (display 2)
     0
