@@ -5,7 +5,7 @@ open System.Text.RegularExpressions
 
 let parseLine wildcards (line: string) =
     let [| cardsTxt; bidTxt |] = Regex.Split(line, @"\s+")
-    let cards = cardsTxt.ToCharArray() |> List.ofArray |> List.map ( function
+    let cards = cardsTxt.ToCharArray() |> List.ofArray |> List.map (function
         | 'J' -> if wildcards then '0' else 'j'
         | 'Q' -> 'q'
         | 'K' -> 'r' // rex
@@ -22,8 +22,8 @@ let handType (hand: Char list, _) =
         |> List.sortDescending
 
     match lengths with
-    | [_] | [   ] -> 6 // Five of a kind
-    | longest :: nextLongest  :: _ ->
+    | [_] | [] -> 6 // Five of a kind
+    | longest::nextLongest::_ ->
         match jokers.Length, longest, nextLongest with
         | 0, 4, _ -> 5 // Four of a kind
         | 0, 3, 2 -> 4 // Full house
