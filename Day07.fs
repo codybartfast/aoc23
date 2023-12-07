@@ -22,30 +22,30 @@ let handType (hand: Char list, _) =
         |> List.sortDescending
 
     match lengths with
-        | [_] | [] -> 6    // Five of a kind
-        | longest :: nextLongest  :: _ ->
-            match jokers.Length, longest, nextLongest with
-            | 0, 4, _ -> 5 // Four of a kind
-            | 0, 3, 2 -> 4 // Full house
-            | 0, 3, _ -> 3 // Three of a kind
-            | 0, 2, 2 -> 2 // Two pair
-            | 0, 2, _ -> 1 // One Pair
-            | 0, _, _ -> 0 // High card
+    | [_] | [   ] -> 6 // Five of a kind
+    | longest :: nextLongest  :: _ ->
+        match jokers.Length, longest, nextLongest with
+        | 0, 4, _ -> 5 // Four of a kind
+        | 0, 3, 2 -> 4 // Full house
+        | 0, 3, _ -> 3 // Three of a kind
+        | 0, 2, 2 -> 2 // Two pair
+        | 0, 2, _ -> 1 // One Pair
+        | 0, _, _ -> 0 // High card
 
-            | 1, 4, _ -> 6
-            | 1, 3, _ -> 5
-            | 1, 2, 2 -> 4
-            | 1, 2, _ -> 3
-            | 1, _, _ -> 1
+        | 1, 4, _ -> 6
+        | 1, 3, _ -> 5
+        | 1, 2, 2 -> 4
+        | 1, 2, _ -> 3
+        | 1, _, _ -> 1
 
-            | 2, 3, _ -> 6
-            | 2, 2, _ -> 5
-            | 2, _, _ -> 3
+        | 2, 3, _ -> 6
+        | 2, 2, _ -> 5
+        | 2, _, _ -> 3
 
-            | 3, 2, _ -> 6
-            | 3, _, _ -> 5
+        | 3, 2, _ -> 6
+        | 3, _, _ -> 5
 
-            | _ -> 6
+        | _ -> 6
 
 let winnings =
     List.map (fun hand -> (handType hand, hand))
