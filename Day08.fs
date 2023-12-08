@@ -12,16 +12,16 @@ let parseLines (lines: string list) =
     let nodes = rest |> List.map parseLine |> Map
     (directions, nodes)
 
-let navigate start (directions, nodes) =
+let navigate start (allDirections, nodes) =
     let rec nav current dirs count =
         match current, dirs with
         | name, _  when (name: string)[2] = 'Z' -> count
-        | _, [] -> nav current directions count
+        | _, [] -> nav current allDirections count
         | _, dir::rest ->
             match dir, Map.find current nodes with
-            | 'L', (left, _) -> nav left rest (count + 1)
-            | 'R', (_, right) -> nav right rest (count + 1)
-    nav start directions 0
+            | 'L', (next, _)
+            | 'R', (_, next) -> nav next rest (count + 1)
+    nav start allDirections 0
 
 let rec lcm x y =
     let rec hcf a b = if b = 0UL then a else hcf b (a % b)
