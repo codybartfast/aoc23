@@ -4,7 +4,8 @@ open System
 open System.Text.RegularExpressions
 
 let parseLine (line: string) =
-    line
+    let thing = Regex.Split(line, @"\s+") |> List.ofArray
+    thing
 
 let part1 (getLines: string -> string list) =
     getLines "test1"
