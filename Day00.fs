@@ -3,13 +3,14 @@ module Day00
 open System
 open System.Text.RegularExpressions
 
-let parseLine (line: string) =
-    let thing = Regex.Split(line, @"\s+") |> List.ofArray
-    thing
+let parseLines lines =
+    let parseLine (line: string) =
+        line.Split(' ') |> Array.map int |> List.ofArray
+    lines |> List.map parseLine
 
 let part1 (getLines: string -> string list) =
     getLines "test1"
-    |> List.map parseLine
+    |> parseLines
     |> fun x -> String.Join(" | ", x)
 
 let part2 (getLines: string -> string list) =
