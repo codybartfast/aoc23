@@ -5,7 +5,7 @@ open System.Text.RegularExpressions
 
 let parseLines lines =
     let parseLine (line: string) =
-        line.Split(' ') |> Array.map int |> List.ofArray
+        line.Split(' ') |> List.ofArray
     lines |> List.map parseLine
 
 let part1 (getLines: string -> string list) =
