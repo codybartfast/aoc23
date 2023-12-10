@@ -48,11 +48,11 @@ let next lookup (entryDir, (x, y)) =
         |> List.exactlyOne
     (exitDir, exitDir |> move (x, y))
 
-let rec navigateLoop lookup start count = seq{
-        yield (start, count)
+let rec navigateLoop lookup start = seq{
+        yield start
         let (_, nextCoord) as next = next lookup start
         if(lookup nextCoord <> 'S') then
-            yield! navigateLoop lookup next (count + 1)}
+            yield! navigateLoop lookup next }
 
 let insideCountOfRow (row: char[]) =
     // flip 'inside' when we encounter "|", "F---J" or "L---7"
@@ -71,6 +71,7 @@ let insideCountOfRow (row: char[]) =
 let part1 getLines =
     let pipes : char[][] = "input" |> getLines |> parseLines
     let lookup (x, y) = pipes[y][x]
+
     let allCoords =
         [for y in 0 .. (pipes.Length - 1) do
             for x in 0 .. (pipes[0].Length - 1) do
@@ -79,10 +80,9 @@ let part1 getLines =
     let start = allCoords |> List.find (lookup >> ((=) 'S'))
     let first = findConnected lookup start |> List.head
 
-    navigateLoop lookup first 1
-        |> List.ofSeq
-        |> List.last |> snd
-        |> (fun n -> n / 2 + 1)
+    navigateLoop lookup first
+    |> Seq.length
+    |> (fun n -> n / 2 + 1)
 
 let part2 (getLines: string -> string list) =
     let pipes : char[][] = "input" |> getLines |> parseLines
@@ -97,9 +97,7 @@ let part2 (getLines: string -> string list) =
     let start = allCoords |> List.find (lookup >> ((=) 'S'))
     let [first; last] = findConnected lookup start
 
-    let loopCoords =
-        navigateLoop lookup first 1
-        |> List.ofSeq |> List.map (fst >> snd) |> Set
+    let loopCoords = navigateLoop lookup first |> Seq.map snd |> Set
 
     // Replace pipe parts that aren't in the loop with '.'
     allCoords |> List.iter(fun coord ->
