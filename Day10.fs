@@ -46,14 +46,15 @@ let next lookup (entryDir, (x, y)) =
         |> List.exactlyOne
     (exitDir, exitDir |> move (x, y))
 
-let rec navigateLoop lookup (start: string * (int * int)) count = seq{
+let rec navigateLoop lookup start count = seq{
         yield (start, count)
         let (_, nextCoord) as next = next lookup start
         if(lookup nextCoord <> 'S') then
             yield! navigateLoop lookup next (count + 1)}
 
-let insideCountForRow (row: char[]) =
-    // flip 'inside' when we encounter "|", "F-- --J" or "L-- --7"
+let insideCountOfRow (row: char[]) =
+    // flip 'inside' when we encounter "|", "F---J" or "L---7"
+    //      but not for "F---7" or "L---J"
     ((0, false, ' '), row) ||> Array.fold (fun (count, inside, wallStart) tile ->
         match inside, wallStart, tile with
         | true, _, '.' -> count + 1, inside, wallStart
@@ -61,7 +62,7 @@ let insideCountForRow (row: char[]) =
         | _,  _ , 'F' -> count, inside, 'F'
         | _,  _ , '|'
         | _, 'F', 'J'
-        | _, 'L', '7' -> count, not inside, wallStart
+        | _, 'L', '7' -> count, not inside, ' '
         | _ -> count, inside, wallStart)
     |> (fun (count, _, _) -> count)
 
@@ -75,6 +76,7 @@ let part1 getLines =
 
     let start =  allCoords |> List.find (lookup >> ((=) 'S'))
     let first = findConnected lookup start |> List.head
+
     navigateLoop lookup first 1
         |> List.ofSeq
         |> List.last |> snd
@@ -106,4 +108,4 @@ let part2 (getLines: string -> string list) =
     let startPart =  [first; last] |> List.map fst |> directionsToPart
     set start startPart
 
-    pipes |> Array.sumBy insideCountForRow
+    pipes |> Array.sumBy insideCountOfRow
