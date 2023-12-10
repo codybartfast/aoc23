@@ -1,36 +1,38 @@
 module Day10
 
+type Direction = N | E | S | W
+
 let parseLines lines =
     let parseLine (line: string) = line.ToCharArray()
     lines |> List.map parseLine |> Array.ofList
 
 let partToDirections = function
-    | '|' -> ["N"; "S"]
-    | '-' -> ["E"; "W"]
-    | 'L' -> ["N"; "E"]
-    | 'J' -> ["N"; "W"]
-    | '7' -> ["S"; "W"]
-    | 'F' -> ["S"; "E"]
+    | '|' -> [N; S]
+    | '-' -> [E; W]
+    | 'L' -> [N; E]
+    | 'J' -> [N; W]
+    | '7' -> [S; W]
+    | 'F' -> [S; E]
 
 let directionsToPart dirs =
     match dirs |> List.sort with
-    | ["N"; "S"] -> '|'
-    | ["E"; "W"] -> '-'
-    | ["E"; "N"] -> 'L'
-    | ["N"; "W"] -> 'J'
-    | ["S"; "W"] -> '7'
-    | ["E"; "S"] -> 'F'
+    | [N; S] -> '|'
+    | [E; W] -> '-'
+    | [E; N] -> 'L'
+    | [N; W] -> 'J'
+    | [S; W] -> '7'
+    | [E; S] -> 'F'
 
-let complement = function "N" -> "S" | "S" -> "N" | "W" -> "E" | "E" -> "W"
+let complement = function N -> S | S -> N | W -> E | E -> W
 
 let move (x, y) = function
-    | "N" -> (x, y - 1)
-    | "E" -> (x + 1, y )
-    | "S" -> (x, y + 1)
-    | "W" -> (x - 1, y)
+    | N -> (x, y - 1)
+    | E -> (x + 1, y )
+    | S -> (x, y + 1)
+    | W -> (x - 1, y)
 
 let findConnected lookup start =
-    ["N"; "E"; "S"; "W"]
+    [N; E; S; W]
     |> List.map (fun dir -> (dir, move start dir))
     |> List.filter (fun (dir, (x, y)) ->
         match lookup (x, y) with
@@ -74,7 +76,7 @@ let part1 getLines =
             for x in 0 .. (pipes[0].Length - 1) do
                 x,y]
 
-    let start =  allCoords |> List.find (lookup >> ((=) 'S'))
+    let start = allCoords |> List.find (lookup >> ((=) 'S'))
     let first = findConnected lookup start |> List.head
 
     navigateLoop lookup first 1
@@ -92,7 +94,7 @@ let part2 (getLines: string -> string list) =
             for x in 0 .. (pipes[0].Length - 1) do
                 x,y]
 
-    let start =  allCoords |> List.find (lookup >> ((=) 'S'))
+    let start = allCoords |> List.find (lookup >> ((=) 'S'))
     let [first; last] = findConnected lookup start
 
     let loopCoords =
@@ -100,12 +102,11 @@ let part2 (getLines: string -> string list) =
         |> List.ofSeq |> List.map (fst >> snd) |> Set
 
     // Replace pipe parts that aren't in the loop with '.'
-    allCoords
-        |> List.iter(fun coord ->
+    allCoords |> List.iter(fun coord ->
             if not <| loopCoords.Contains coord then set coord '.')
 
     // Put regular pipe part where 'S' was
-    let startPart =  [first; last] |> List.map fst |> directionsToPart
+    let startPart = [first; last] |> List.map fst |> directionsToPart
     set start startPart
 
     pipes |> Array.sumBy insideCountOfRow
