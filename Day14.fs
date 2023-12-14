@@ -5,28 +5,23 @@ open System.Text.RegularExpressions
 
 type Platform = char [] []
 
-
 let parseLines lines =
     let parseLine (line: string) =
         line.ToCharArray()
     lines |> List.map parseLine |> Array.ofList
 
-
-let display (platform: Platform) =
+let tiltLeft (platform: Platform) =
+    let rec findDest (row: char[]) i =
+        let nxt = i - 1
+        if nxt >= 0 && row[nxt] = '.' then findDest row nxt else  i
+    let tiltRowWest (row: char []) =
+        row |> Array.iteri (fun i c ->
+            if c = 'O' then
+                let dest = findDest row i
+                row[i] <- '.'
+                row[dest] <- 'O' )
+    platform |> Array.iter tiltRowWest
     platform
-    |> Array.iter (String >> printfn "%s")
-
-let tiltRowWest (row: char []) =
-    let rec tilt packed space todo =
-        match todo with
-        | [] -> (packed |> List.rev) @ space
-        | '.'::rst -> tilt packed ('.'::space) rst
-        | 'O'::rst -> tilt ('O'::packed) space rst
-        | '#'::rst -> tilt ('#'::(space @ packed)) [] rst
-    tilt [] [] (row |> List.ofArray) |> Array.ofList
-
-let tiltWest (platform: Platform) =
-    platform |> Array.map tiltRowWest
 
 let rotateRight (platform: Platform) =
     platform |> Array.transpose |> Array.map Array.rev
@@ -45,17 +40,17 @@ let cycle (platform: Platform) =
     platform
     |> rotateLeft
 
-    |> tiltWest |> rotateRight
-    |> tiltWest |> rotateRight
-    |> tiltWest |> rotateRight
-    |> tiltWest |> rotateRight
+    |> tiltLeft |> rotateRight
+    |> tiltLeft |> rotateRight
+    |> tiltLeft |> rotateRight
+    |> tiltLeft |> rotateRight
 
     |> rotateRight
 
 let part1 getLines =
     "input" |> getLines  |> parseLines
     |> rotateLeft
-    |> tiltWest
+    |> tiltLeft
     |> rotateRight
     |> totalLoad
 
@@ -69,9 +64,7 @@ let mutable known = Map.empty<int, int * Platform>
 let rec findDuplicate (nCycles: int) (platform: Platform) =
     let load = totalLoad platform
     match Map.tryFind load known with
-    | Some (n, p) when p = platform ->
-        printfn $"{p = platform}"
-        ((n, p), (nCycles, platform))
+    | Some (n, p) when p = platform -> ((n, p), (nCycles, platform))
     | _ ->
         known <- known |> Map.add load (nCycles, platform)
         findDuplicate (nCycles + 1) (cycle platform)
@@ -79,6 +72,7 @@ let rec findDuplicate (nCycles: int) (platform: Platform) =
 let tooBig = 1000000000
 
 let part2 getLines =
+    known <- Map.empty
     let ((first, platform), (second, _)) = "input" |> getLines  |> parseLines |> findDuplicate 0
     let remaining = (tooBig - second) % (second - first)
     repeatCycle remaining platform

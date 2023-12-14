@@ -23,7 +23,7 @@ let getLines day file =
 
 [<EntryPoint>]
 let main _ =
-    if false then
+    if true then
         printfn ""
         printfn $"Warming up ... "
         (fun () -> part1 (getLines day)) |> time |> ignore
