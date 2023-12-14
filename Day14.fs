@@ -1,14 +1,13 @@
 module Day14
 
 let rotateRight = Array.transpose >> Array.map Array.rev
-
 let rotateLeft = Array.map Array.rev >> Array.transpose
 
-(*  Orientate the platform with North on the 'left' so that stones roll
-    within a row  *)
 let parseLines lines =
     let parseLine (line: string) = line.ToCharArray()
     lines |> List.map parseLine |> Array.ofList
+    // Orientate the platform with North on the
+    // 'left' so that stones roll within a row
     |> rotateLeft
 
 let tiltLeft platform =
@@ -18,16 +17,15 @@ let tiltLeft platform =
     let tiltRowLeft (row: char []) =
         row |> Array.iteri (fun i c ->
             if c = 'O' then
-                let dest = findRest row i
                 row[i] <- '.'
-                row[dest] <- 'O')
-        row
-    platform |> Array.map (Array.copy >> tiltRowLeft)
+                row[findRest row i] <- 'O')
+    platform |> Array.iter tiltRowLeft
+    platform
 
-let rec repeat func n value =
-    if n = 0 then value else repeat func (n - 1) (func value)
+let rec repeat n func value =
+    if n = 0 then value else repeat (n - 1) func (func value)
 
-let cycle = repeat (tiltLeft >> rotateRight) 4
+let cycle = repeat 4 (tiltLeft >> rotateRight)
 
 let totalLoad =
     rotateLeft
@@ -36,7 +34,7 @@ let totalLoad =
     >> Array.sum
 
 let rec findDuplicate nCycles known platform  =
-    let key = (platform |> totalLoad) * (platform |> rotateLeft |> totalLoad)
+    let key = platform |> rotateLeft |> totalLoad
     match Map.tryFind key known with
     | Some n ->  (n, nCycles), platform
     | _ -> findDuplicate
@@ -44,14 +42,10 @@ let rec findDuplicate nCycles known platform  =
             (known |> Map.add key nCycles)
             (cycle platform)
 
-let part1 getLines =
-    "input" |> getLines |> parseLines
-    |> tiltLeft
-    |> totalLoad
+let part1 getLines = "input" |> getLines |> parseLines |> tiltLeft |> totalLoad
 
 let part2 getLines =
     let platform = "input" |> getLines |> parseLines
     let (fstCycle, dupCycle), dupPlat = platform |> findDuplicate 0 Map.empty
     let remaining = (1_000_000_000 - dupCycle) % (dupCycle - fstCycle)
-    repeat cycle remaining dupPlat
-    |> totalLoad
+    dupPlat |> repeat remaining cycle |> totalLoad
