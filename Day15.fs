@@ -7,20 +7,16 @@ type Instruction =
     | Remove of string * int
     | Insert of string * int * int
 
-let hash (txt: string) =
-    let rec hash (chars: char list) current =
-        match chars with
-        | [] -> current
-        | c::cs -> current + int c |> ((*) 17) |> fun n -> n % 256 |> hash cs
-    hash (txt.ToCharArray() |> List.ofArray) 0
+let updateHash current char = current + int char |> ((*) 17) |> fun n -> n % 256
+let hash (txt: string) = txt.ToCharArray() |> Array.fold updateHash 0
 
 let instruction (txt: string) =
     if txt.EndsWith("-") then
         let label = txt[0 .. ^1]
         Remove (label, hash label)
     else
-        let [| label; focolLength |] = txt.Split('=')
-        Insert (label, hash label, focolLength |> int)
+        let [| label; focalLength |] = txt.Split('=')
+        Insert (label, hash label, int focalLength)
 
 let remove box lbl =
     match box |> List.tryFindIndex (fun (lens: Lens) -> (fst lens) = lbl) with
@@ -45,8 +41,7 @@ let boxPower boxIdx =
 
 let part1 (getLines: string -> string list) =
     "input" |> getLines |> List.head |> _.Split(',')
-    |> Array.map hash
-    |> Array.sum
+    |> Array.sumBy hash
 
 let part2 (getLines: string -> string list) =
     "input" |> getLines |> List.head |> _.Split(',')
