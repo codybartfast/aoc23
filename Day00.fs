@@ -8,10 +8,10 @@ let parseLines lines =
         line.Split(' ') |> List.ofArray
     lines |> List.map parseLine
 
-let part1 getLines =
+let part1 (getLines: string -> string list) =
     "test1" |> getLines  |> parseLines
     |> fun x -> String.Join(" | ", x)
 
-let part2 getLines =
+let part2 (getLines: string -> string list) =
     let lines = "input" |> getLines
     $"{lines |> List.length} lines: {lines}"
