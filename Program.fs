@@ -2,8 +2,8 @@
 open System.Diagnostics
 open System.IO
 
-open Day16
-let day = "16"
+open Day18
+let day = "18"
 
 let inline display partNo (result, time: TimeSpan) =
     let timePart = time.TotalSeconds.ToString("000.000000")
