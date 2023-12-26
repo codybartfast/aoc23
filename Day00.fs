@@ -13,5 +13,5 @@ let part1 (getLines: string -> string list) =
     |> fun x -> String.Join(" | ", x)
 
 let part2 (getLines: string -> string list) =
-    "input" |> getLines  |> parseLines
+    "input" |> getLines  |> Seq.length
     |> fun x -> String.Join(" | ", x)
