@@ -74,4 +74,4 @@ let part1 (getLines: string -> string list) =
     (size conns start1) * (size conns start2)
 
 let part2 (getLines: string -> string list) =
-    "Merry Christmas, and a peaceful new year"
+    "Merry Christmas and a peaceful New Year!"
